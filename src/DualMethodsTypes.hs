@@ -2,62 +2,34 @@
 
 module DualMethodsTypes where
 
-import Control.Applicative
+import Data.Ratio
 
 ---------------------------------------------------------------
---Positions and Directions in 3D Space (i.e. Vector3)
+--type synonyms
+
+type Vector3 = Triple Double
+type Vector3I = Triple Rational
+
+---------------------------------------------------------------
+--new types
+
+newtype Surface = Surface (Vector3 -> Double)
+newtype VertexPlacer = VertexPlacer (Eituple Double -> Vector3)
+newtype Simplifier = Simplifier (Eituple Vector3 -> Maybe Vector3)
+
+newtype Vertices = Vertices [Vector3]
+newtype Normals = Normals [Vector3]
+newtype Colors = Colors [Color]
+newtype Indices = Indices [Int]
+
+---------------------------------------------------------------
+--data types
 
 data Triple a = Triple  
                 { x :: a
                 , y :: a
                 , z :: a
                 } deriving Functor
-
-instance Applicative Triple where
-    pure a = Triple a a a
-    Triple f g h <*> Triple a b c = Triple (f a) (g b) (h c)
-
-infixl 6 #+
-(#+) :: Num a => Triple a -> Triple a -> Triple a
-(#+) = liftA2 (+)
-
-infixl 6 #-
-(#-) :: Num a => Triple a -> Triple a -> Triple a
-(#-) = liftA2 (-)
-
-infixl 7 #*
-(#*) :: Num a => Triple a -> a -> Triple a
-(#*) t = flip fmap t . (*) 
-
-infixl 7 #/
-(#/) :: Fractional a => Triple a -> a -> Triple a
-(#/) t = flip fmap t . (/)
-
-type Position = Triple Double
-type Direction = Triple Double
-
----------------------------------------------------------------
---type synonyms
-
-type Length = Double
-type Size = Double
-type Depth = Int
-type Index = Int
-
----------------------------------------------------------------
---new types
-
-newtype Surface = Surface (Position -> Length)
-newtype VertexPlacer = VertexPlacer (Eituple Length -> Position)
-newtype Simplifier = Simplifier (Eituple Position -> Maybe Position)
-
-newtype Vertices = Vertices [Position]
-newtype Normals = Normals [Direction]
-newtype Colors = Colors [Color]
-newtype Indices = Indices [Index]
-
----------------------------------------------------------------
---data types
 
 data Color = Color 
                 { r :: Double
